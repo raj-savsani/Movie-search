@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins&display=swap"
+      rel="stylesheet"
+    />
+    <title>Movie Search Engine</title>
+    <style>
+      body {
+        text-align: center;
+        font-family: "Poppins", sans-serif;
+        background-color: blanchedalmond;
+      }
+      /* #movies{
+            display: grid;
+            grid-template-columns: repeat(4,20%);
+            margin: 2%;
+        } */
+      #movie {
+        font-size: 20px;
+        width: 60%;
+        text-align: center;
+        border-radius: 30px;
+      }
+      .btn {
+        font-size: 20px;
+      }
+      .movie-details {
+        margin: 5%;
+      }
+      .name {
+        font-size: 50px;
+      }
+      .plot {
+        font-size: 17px;
+        font-weight: 500;
+        font-style: italic;
+      }
+      .actors,
+      .dir,
+      .lang,
+      .genre {
+        font-size: 20px;
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Movie Search Engine</h1>
+    <input id="movie" type="text" placeholder="Enter Movie Name" required />
+    <button class="btn" onclick="search()">Search</button>
+    <div id="movies"></div>
+  </body>
+</html>
+<script>
+  async function search() {
+    let name = document.getElementById("movie").value;
+
+    let res = await fetch(`https://www.omdbapi.com/?apikey=5f3b3e73&t=${name}`);
+
+    let data = await res.json();
+    console.log("data:", data);
+    showMovie(data);
+  }
+
+  let parent = document.getElementById("movies");
+
+  function showMovie(m) {
+    parent.innerHTML = null;
+
+    let div = document.createElement("div");
+    div.setAttribute("class", "movie-details");
+
+    let img = document.createElement("img");
+    img.src = m.Poster;
+
+    let name = document.createElement("h2");
+    name.setAttribute("class", "name");
+    name.textContent = m.Title;
+
+    let actors = document.createElement("p");
+    actors.setAttribute("class", "actors");
+    actors.textContent = "Actors: " + m.Actors;
+
+    let director = document.createElement("p");
+    director.setAttribute("class", "dir");
+    director.textContent = "Director: " + m.Director;
+
+    let lang = document.createElement("p");
+    lang.setAttribute("class", "lang");
+    lang.textContent = "Language: " + m.Language;
+
+    let genre = document.createElement("p");
+    genre.setAttribute("class", "genre");
+    genre.textContent = "Genre: " + m.Genre;
+
+    let rating = document.createElement("h3");
+    rating.setAttribute("class", "genre");
+    if (m.imdbRating > 8.5) {
+      rating.textContent = "*recommended    IMDb: " + m.imdbRating;
+    } else {
+      rating.textContent = "IMDb: " + m.imdbRating;
+    }
+
+    let plot = document.createElement("p");
+    plot.setAttribute("class", "plot");
+    plot.textContent = m.Plot;
+
+    div.append(img, name, plot, actors, rating, director, lang, genre);
+
+    parent.append(div);
+  }
+</script>
